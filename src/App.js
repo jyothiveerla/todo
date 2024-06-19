@@ -1,25 +1,50 @@
-import logo from './logo.svg';
-import './App.css';
+import { Component } from "react";
+import { v4 as uuidv4 } from "uuid";
+import TodoItem from "./components/TodoItem";
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+import "./App.css";
+
+class App extends Component {
+  state = {
+    todoList: [],
+    name: "",
+  };
+
+  onAddTodo = (event) => {
+    event.preventDefault();
+    const { name } = this.state;
+    const newTodo = {
+      id: uuidv4(),
+      name,
+    };
+
+    this.setState((prevState) => ({
+      todoList: [...prevState.todoList, newTodo],
+      name: "",
+    }));
+  };
+
+  onChangeName = (event) => {
+    this.setState({ name: event.target.value });
+  };
+
+  render() {
+    const { todoList, name } = this.state;
+
+    return (
+      <div className="todo_list_container">
+        <form className="todo_form_container" onSubmit={this.onAddTodo}>
+          <input onChange={this.onChangeName} />
+          <button type="submit" className="button" value={name}></button>
+        </form>
+        <ul className="todo_list">
+          {todoList.map((eachTodo) => (
+            <TodoItem key={eachTodo.id} todoDetails={eachTodo} />
+          ))}
+        </ul>
+      </div>
+    );
+  }
 }
 
 export default App;
